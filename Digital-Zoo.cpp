@@ -4,94 +4,138 @@
 
 using namespace std;
 
-// Define the Animal class
+// ---------- Diet Class ----------
+// Represents the type of diet and its description
+class Diet {
+private:
+    string type;
+
+public:
+    Diet(string type) : type(type) {}
+
+    string getType() const {
+        return type;
+    }
+
+    string getDescription() const {
+        if (type == "Herbivore")
+            return "eats grasses, plants, and shrubs.";
+        else if (type == "Carnivore")
+            return "eats meat.";
+        else
+            return "has an unknown diet.";
+    }
+};
+
+// ---------- Habitat Class ----------
+// Represents the type of habitat and its description
+class Habitat {
+private:
+    string type;
+
+public:
+    Habitat(string type) : type(type) {}
+
+    string getType() const {
+        return type;
+    }
+
+    string getDescription() const {
+        if (type == "Grassland")
+            return "lives in wide open grassy plains.";
+        else if (type == "Tropical Forest")
+            return "lives in dense tropical forests.";
+        else
+            return "has an unspecified habitat.";
+    }
+};
+
+// ---------- Base Animal Class ----------
 class Animal {
 public:
     string name;
     string species;
     int age;
-    string habitat;
-    string diet;
+    Habitat habitat;  // Composition: has-a Habitat
+    Diet diet;        // Composition: has-a Diet
     string sex;
 
-    // Constructor to initialize the Animal object
-    Animal(string name, string species, int age, string habitat, string diet, string sex) { 
-        this->name = name;
-        this->species = species;
-        this->age = age;
-        this->habitat = habitat;
-        this->diet = diet;
-        this->sex = sex;
-        }
-    
-    // Method to display animal information
-    void displayInfo() {
-        cout << "Name: " << name << endl;
-        cout << "Species: " << species << endl;
-        cout << "Habitat: " << habitat << endl;
-        cout << "Age: " << age << endl;
-        cout << "Diet: " << diet << endl; 
-        cout << "Sex: " << sex << endl;
-    }
+    // Constructor with diet and habitat types
+    Animal(string name, string species, int age, string habitatType, string dietType, string sex)
+        : name(name), species(species), age(age), habitat(habitatType), diet(dietType), sex(sex) {}
 
-    // Method to make animal sound
+    virtual ~Animal() {}
+
+    // Virtual function for polymorphic behavior
     virtual void makeSound() {
         cout << "Animal sound" << endl;
     }
 
-    // Method to have the animal eat
+    // Displays animal's information
+    void displayInfo() {
+        cout << "Name: " << name << endl;
+        cout << "Species: " << species << endl;
+        cout << "Habitat: " << habitat.getType() << endl;
+        cout << "Age: " << age << endl;
+        cout << "Diet: " << diet.getType() << endl;
+        cout << "Sex: " << sex << endl;
+    }
+
+    // Describes what the animal eats
     void eat() {
-        cout << name << " is eating " << diet << endl;
+        cout << name << " " << diet.getDescription() << endl;
+    }
+
+    // Describes the animal's habitat
+    void describeHabitat() {
+        cout << name << " " << habitat.getDescription() << endl;
     }
 };
 
-// Define the Rhinoceros class as a subclass of Animal
+// ---------- Rhinoceros Subclass ----------
 class Rhinoceros : public Animal {
 public:
-    // Constructor to initialize the Rhinoceros object
-    Rhinoceros(string name, string species, int age, string habitat, string diet, string sex) 
-        : Animal(name, "Rhinoceros", age, habitat, diet, sex) {}
+    Rhinoceros(string name, string species, int age, string habitat, string diet, string sex)
+        : Animal(name, species, age, habitat, diet, sex) {}
 
-    // Override the makeSound method
     void makeSound() override {
-        cout << "Grunts" << endl;
+        cout << "Makes grunting sounds." << endl;
     }
 };
 
-// Definte the Komodo Dragon class as a subclass of Animal
+// ---------- KomodoDragon Subclass ----------
 class KomodoDragon : public Animal {
 public:
-    // Constructor to initialize the KomodoDragon object
-    KomodoDragon(string name, string species, int age, string habitat, string diet, string sex) 
-        : Animal(name, "Komodo Dragon", age, habitat, diet, sex) {}
+    KomodoDragon(string name, string species, int age, string habitat, string diet, string sex)
+        : Animal(name, species, age, habitat, diet, sex) {}
 
-    // Override the makeSound method
     void makeSound() override {
-        cout << "Hisses" << endl;
+        cout << "Makes hissing sounds." << endl;
     }
-    };
+};
 
-
-// Beginning of the main function
+// ---------- Main Function ----------
 int main() {
-    // Create a vector to store animals
+    // Create a vector to hold pointers to Animal objects
+    // This allows for polymorphic behavior
     vector<Animal*> zooAnimals;
 
-    // Docket of animals in the zoo
-    zooAnimals.push_back(new Rhinoceros("Ragnar", "White Rhinoceros", 11, "Grassland", "Grasses and shrubs", "Male"));
-    zooAnimals.push_back(new Rhinoceros("Lagertha", "White Rhinoceros", 9,"Grassland", "Grasses and shrubs", "Female"));
-    zooAnimals.push_back(new KomodoDragon("Gomez", "Komodo Dragon", 3, "Tropical Forest", "Meat", "Male"));
-    zooAnimals.push_back(new KomodoDragon("Morticia", "Komodo Dragon", 5, "Tropical Forest", "Meat", "Female"));
+    // Add animals to the zoo
+    zooAnimals.push_back(new Rhinoceros("Ragnar", "White Rhinoceros", 11, "Grassland", "Herbivore", "Male"));
+    zooAnimals.push_back(new Rhinoceros("Lagertha", "White Rhinoceros", 9, "Grassland", "Herbivore", "Female"));
+    zooAnimals.push_back(new KomodoDragon("Bjorn", "Komodo Dragon", 3, "Tropical Forest", "Carnivore", "Male"));
+    zooAnimals.push_back(new KomodoDragon("Torvi", "Komodo Dragon", 5, "Tropical Forest", "Carnivore", "Female"));
 
-    // Display information about each animal in the zoo
+    // Loop through each animal and display its behavior
     for (Animal* animal : zooAnimals) {
         animal->displayInfo();
         animal->makeSound();
         animal->eat();
+        animal->describeHabitat();
         cout << endl;
     }
 
-    // Clean up memory
+    // Clean up allocated memory
     for (Animal* animal : zooAnimals) {
         delete animal;
     }
