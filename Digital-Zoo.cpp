@@ -9,19 +9,21 @@ using namespace std;
 class Diet {
 private:
     string type;
-
+//
 public:
     Diet(string type) : type(type) {}
 
     string getType() const {
         return type;
     }
-
+// Returns a description based on the diet type
     string getDescription() const {
         if (type == "Herbivore")
             return "eats grasses, plants, and shrubs.";
         else if (type == "Carnivore")
             return "eats meat.";
+        else if (type == "Omnivore")
+            return "eats both plants and meat.";
         else
             return "has an unknown diet.";
     }
@@ -30,7 +32,7 @@ public:
 // ---------- Habitat Class ----------
 // Represents the type of habitat and its description
 class Habitat {
-private:
+private:  
     string type;
 
 public:
@@ -39,7 +41,7 @@ public:
     string getType() const {
         return type;
     }
-
+// Returns a description based on the habitat type
     string getDescription() const {
         if (type == "Grassland")
             return "lives in wide open grassy plains.";
@@ -99,7 +101,7 @@ public:
         : Animal(name, species, age, habitat, diet, sex) {}
 
     void makeSound() override {
-        cout << "Makes grunting sounds." << endl;
+        cout << name << " makes grunting sounds." << endl;
     }
 };
 
@@ -110,7 +112,7 @@ public:
         : Animal(name, species, age, habitat, diet, sex) {}
 
     void makeSound() override {
-        cout << "Makes hissing sounds." << endl;
+        cout << name << " makes hissing sounds." << endl;
     }
 };
 
@@ -135,7 +137,8 @@ int main() {
         cout << endl;
     }
 
-    // Clean up allocated memory
+    // Clean up allocated memory for efficiency
+    // Delete each animal object to prevent memory leaks
     for (Animal* animal : zooAnimals) {
         delete animal;
     }
